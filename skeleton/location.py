@@ -28,7 +28,7 @@ import copy
 import pprint
 
 
-class Location():
+class Location:
     __api_key = None
     __api_client = None
 
@@ -58,23 +58,24 @@ class Location():
         if (not (-180 < longitude < 180) or
                 not (-180 < latitude < 180)):
             raise ValueError("longitude and latitude must be in range [-180, 180]")
-        self.__longitude = longitude
-        self.__latitude = latitude
+        self._longitude = longitude
+        self._latitude = latitude
+        #self._api_client = TODO ajouter paramètre
 
     def __str__(self):
-        return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self.__latitude, lon=self.__longitude)
+        return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self._latitude, lon=self.__longitude)
 
     def get_latitude(self):
-        return self.__latitude
+        return self._latitude
 
     def get_longitude(self):
-        return self.__longitude
+        return self._longitude
 
     def get_name(self):
         response = self.__api_client.reverse_geocode(
             (
-                self.__longitude,
-                self.__latitude
+                self._longitude,
+                self._latitude
             ),
             language="fr"
         )
@@ -83,7 +84,7 @@ class Location():
         return address_name
 
     def get_travel_distance_and_time(self, destination, mode="walking"):
-        coord_orig = (self.__longitude, self.__latitude)
+        coord_orig = (self._longitude, self._latitude)
         coord_dest = (destination.get_longitude(), destination.get_latitude())
         response = self.__api_client.directions(
             coord_orig,
@@ -102,35 +103,37 @@ class Location():
     def __eq__(self, other):
         if not isinstance(other, Location):
             raise ValueError("illegal argument type. class Location expected")
-        return self.__longitude == other.get_longitude() and self.__latitude == other.get_latitude()
+        return self._longitude == other.get_longitude() and self._latitude == other.get_latitude()
 
     def __ne__(self, other):
         if not isinstance(other, Location):
             raise ValueError("illegal argument type. class Location expected")
-        return self.__longitude != other.get_longitude() or self.__latitude != other.get_latitude()
+        return self._longitude != other.get_longitude() or self._latitude != other.get_latitude()
 
 
 class LocationSample:
 
-    def __init__(self, dt: datetime, location: Location):
+    def __init__(self, date: datetime, location: Location, text: str=""):
         lon = location.get_longitude()
         lat = location.get_latitude()
-        self.__location = Location(lon, lat)
-        self.__date = dt
+        self._location = Location(lon, lat)
+        self._date = date
+
+        #self._description =  TODO ajouter description en paramètre
 
     def get_location(self):
-        return self.__location
+        return self._location
 
     def get_date(self):
-        return self.__date
+        return self._date
 
     def get_description(self):
         position = "({lat:.2f}, {lng:.2f})" \
             .format(
-            lat=self.__location.get_latitude(),
-            lng=self.__location.get_longitude()
+            lat=self._location.get_latitude(),
+            lng=self._location.get_longitude()
         )
-        date = self.__date.strftime("%Y-%m-%d, %H:%M:%S")
+        date = self._date.strftime("%Y-%m-%d, %H:%M:%S")
         return "<div>" \
                "<p>{str_date:<20}:{date:>20}</p>" \
                "<p>{str_position:<20}:{position:>20}</p>" \
@@ -147,9 +150,9 @@ class LocationSample:
                "longitude: {lon:.5f}" \
                "]" \
                "]".format(
-            date=self.__date,
-            lat=self.__location.get_latitude(),
-            lon=self.__location.get_longitude()
+            date=self._date,
+            lat=self._location.get_latitude(),
+            lon=self._location.get_longitude()
         )
 
     # Comparison is allowed only if the objects share the same location.
@@ -157,51 +160,50 @@ class LocationSample:
     def __eq__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        return self.__location == other.get_location() and self.__date == other.get_date()
+        return self._location == other.get_location() and self._date == other.get_date()
 
     def __ne__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        return self.__location != other.get_location() or self.__date != other.get_date()
+        return self._location != other.get_location() or self._date != other.get_date()
 
     def __ge__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self.__location != other.get_location():
+        elif self._location != other.get_location():
             return NotImplemented
         else:
-            return self.__date >= other.get_date()
+            return self._date >= other.get_date()
 
     def __gt__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self.__location != other.get_location():
+        elif self._location != other.get_location():
             return NotImplemented
         else:
-            return self.__date > other.get_date()
+            return self._date > other.get_date()
 
     def __le__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self.__location != other.get_location():
+        elif self._location != other.get_location():
             return NotImplemented
         else:
-            return self.__date <= other.get_date()
+            return self._date <= other.get_date()
 
     def __lt__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self.__location != other.get_location():
+        elif self._location != other.get_location():
             return NotImplemented
         else:
-            return self.__date < other.get_date()
+            return self._date < other.get_date()
 
 
 class LocationProvider:
     app = None
     web = None
 
-    # TODO: Définir le constructeur de la classe abstraite.
     @abstractmethod
     def __init__(self):
         pass

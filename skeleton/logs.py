@@ -38,8 +38,6 @@ class LogsLocationProvider(ListLocationProvider):
                         samples += [(f.name, loc)]
         except FileNotFoundError as e:
             print("Impossible de trouver le fichier donné.")
-        else:
-            print("Erreur")
         super().__init__(samples)
 
         # r= re.match("a(b|c)d", "abd")
@@ -76,12 +74,10 @@ class LogsLocationProvider(ListLocationProvider):
         date_line = log[start+1:end]
         # gérer les UNKNOWNS
         t = datetime.strptime(date_line, "%Y-%m-%dT%H:%M:%S.%f")
-        print(date_line)
         # remove [] substring
         line = log.split("]")[1]
         pair = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if not len(pair) == 0:
-            print(pair)
             lat = float(pair[0])
             lng = float(pair[1])
 
