@@ -142,7 +142,7 @@ class LocationSample:
             str_position="coord", position=position
         )
 
-    def __str__(self):
+    def __str__(self):  # TODO afficher correctement le datetime
         return "LocationSample [" \
                "datetime: {date:s}, " \
                "location: Location [" \
@@ -150,7 +150,7 @@ class LocationSample:
                "longitude: {lon:.5f}" \
                "]" \
                "]".format(
-            date=self._date,
+            date=str(self._date),
             lat=self._location.get_latitude(),
             lon=self._location.get_longitude()
         )
@@ -318,11 +318,13 @@ class LocationProvider:
 
     def get_surrounding_temporal_location_samples(self, timestamp: datetime):
         samples = self.get_location_samples()
+        print(samples[0])
+        print(samples[1])
+        print(samples[2])
         prev = next_ = None
         for i in range(len(samples)):
-            print(samples[i])
             curr_date = samples[i].get_date()
-            if i == 0 and curr_date > datetime: # TODO erreur de compilation
+            if i == 0 and curr_date > datetime:  # TODO erreur de compilation
                 next_ = samples[i]
                 break
             elif i > 0 and curr_date > datetime:
@@ -384,34 +386,34 @@ class CompositeLocationProvider(LocationProvider):
 if __name__ == '__main__':
     pass
     # Tester l'implémentation de cette classe avec les instructions de ce bloc main (le résultat attendu est affiché ci-dessous)
-    # Configuration.get_instance().add_element("verbose", True)
-    # Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
+    Configuration.get_instance().add_element("verbose", True)
+    Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
 
-    # paris = Location(48.854788, 2.347557)
-    # lausanne = Location(46.517738, 6.632233)
-    # print(lausanne.get_name())
+    paris = Location(48.854788, 2.347557)
+    lausanne = Location(46.517738, 6.632233)
+    print(lausanne.get_name())
 
-    # sample1 = LocationSample(datetime(2019, 3, 3, 12, 25), paris)
-    # print(sample1.get_location())
-    # print(sample1.get_date())
-    # print(sample1)
+    sample1 = LocationSample(datetime(2019, 3, 3, 12, 25), paris)
+    print(sample1.get_location())
+    print(sample1.get_date())
+    print(sample1)
 
-    # sample2 = LocationSample(datetime(2019, 3, 3, 14, 56, 5), lausanne)
-    # print(sample1 < sample2)
+    sample2 = LocationSample(datetime(2019, 3, 3, 14, 56, 5), lausanne)
+    print(sample1 < sample2)
 
-    # a = [sample2, sample1]
-    # a.sort()
+    a = [sample2, sample1]
+    a.sort()
 
-    # print([str(x) for x in a])
+    print([str(x) for x in a])
 
-    # crime = LocationSample(datetime(2019, 3, 31, 18, 30, 20), Location(46.520336, 6.572844))
-    # print(crime.get_location().get_travel_distance_and_time(Location(46.521045, 6.574664)))
+    crime = LocationSample(datetime(2019, 3, 31, 18, 30, 20), Location(46.520336, 6.572844))
+    print(crime.get_location().get_travel_distance_and_time(Location(46.521045, 6.574664)))
 
-    # locationsamples = ListLocationProvider([sample1, sample2])
-    # print(locationsamples.get_location_samples())
-    # locationsamples.show_location_samples()
+    locationsamples = ListLocationProvider([sample1, sample2])
+    print(locationsamples.get_location_samples())
+    locationsamples.show_location_samples()
 
-    # print(locationsamples + locationsamples)
+    print(locationsamples + locationsamples)
 
     ### Résultat attendu ###
 
