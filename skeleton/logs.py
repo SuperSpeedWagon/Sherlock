@@ -31,11 +31,11 @@ class LogsLocationProvider(ListLocationProvider):
             lines = f.readlines()
             for l in lines:
                 line = l.strip('\n')
-                if l.find("source: GPS") != -1:  # garder seulement les coordonnées GPS
+                if line.find("source: GPS") != -1:  # garder seulement les coordonnées GPS
                     t, lat, lng = LogsLocationProvider._extract_location_sample_from_log(line)
                     if not (t is None or lat is None or lng is None):
                         loc = LocationSample(t, Location(lat, lng))
-                        samples += [(f.name, loc)]
+                        samples.append(loc)
         except FileNotFoundError as e:
             print("Impossible de trouver le fichier donné.")
         super().__init__(samples)
@@ -51,7 +51,8 @@ class LogsLocationProvider(ListLocationProvider):
     # TODO: Implémenter la méthode __str__ pour afficher les objets de la forme
     #       suivante.
     def __str__(self):
-        return "LogsLocationProvider (" + self.__file + ", " + str(len(self.get_location_samples())) + " location samples)"
+        return "LogsLocationProvider (" + self.__file + ", " + str(
+            len(self.get_location_samples())) + " location samples)"
 
     # LogsLocationProvider (source: ../data/logs/jdoe.log, 2 location samples)
 
@@ -71,15 +72,15 @@ class LogsLocationProvider(ListLocationProvider):
 
         start = log.find("[")
         end = log.find("]")
-        date_line = log[start+1:end]
+        date_line = log[start + 1:end]
         # gérer les UNKNOWNS
         t = datetime.strptime(date_line, "%Y-%m-%dT%H:%M:%S.%f")
         # remove [] substring
         line = log.split("]")[1]
         pair = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if not len(pair) == 0:
-            lat = float(pair[0])
-            lng = float(pair[1])
+            lng = float(pair[0])
+            lat = float(pair[1])
 
         return t, lat, lng
 
@@ -91,7 +92,8 @@ if __name__ == '__main__':
 
     lp = LogsLocationProvider('../data/logs/hschmidt.log')
     print(lp)
-    print(lp.get_surrounding_temporal_location_samples(datetime.strptime('2021-04-08 09:16:23', '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone(timedelta(hours=2)))))
+    print(lp.get_surrounding_temporal_location_samples(
+        datetime.strptime('2021-04-08 09:16:23', '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone(timedelta(hours=2)))))
     lp.show_location_samples()
     lp.print_location_samples()
 

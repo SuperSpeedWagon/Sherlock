@@ -37,12 +37,13 @@ class PictureLocationProvider(ListLocationProvider):
                 if f.name.endswith(i):
                     valid = True
             if not valid:
+                # TODO only if config contains --verbose
                 print("Attention: fichier ignoré ’" + f.name + "’ (Informations de temps et/ou location manquantes)")
             else:
                 t, lat, lng = PictureLocationProvider._extract_location_sample_from_picture(f)
                 if not (t is None or lat is None or lng is None):
                     loc = LocationSample(t, Location(lat, lng))
-                    samples += [(f.name, loc)]
+                    samples.append(loc)
         super(PictureLocationProvider, self).__init__(samples)
 
     def get_directory(self):
@@ -55,7 +56,7 @@ class PictureLocationProvider(ListLocationProvider):
     #       suivante :
     def __str__(self):
         return "PictureLocationProvider (source: ’ " + str(self.get_directory()) + "’ (" + str(
-            self.get_list_valid_extensions()) + "), " + str(
+            self.get_list_valid_extensions()).replace("'", "").strip("[").strip("]") + "), " + str(
             len(super(PictureLocationProvider, self).get_location_samples())) + " location samples)"
 
     @staticmethod

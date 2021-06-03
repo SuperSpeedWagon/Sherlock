@@ -60,7 +60,7 @@ class Location:
             raise ValueError("longitude and latitude must be in range [-180, 180]")
         self._longitude = longitude
         self._latitude = latitude
-        #self._api_client = TODO ajouter paramètre
+        # self._api_client = TODO ajouter paramètre
 
     def __str__(self):
         return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self._latitude, lon=self.__longitude)
@@ -113,13 +113,13 @@ class Location:
 
 class LocationSample:
 
-    def __init__(self, date: datetime, location: Location, text: str=""):
+    def __init__(self, date: datetime, location: Location, text: str = ""):
         lon = location.get_longitude()
         lat = location.get_latitude()
         self._location = Location(lon, lat)
         self._date = date
 
-        #self._description =  TODO ajouter description en paramètre
+        # self._description =  TODO ajouter description en paramètre
 
     def get_location(self):
         return self._location
@@ -145,7 +145,7 @@ class LocationSample:
     def __str__(self):
         return "LocationSample [" \
                "datetime: {date:s}, " \
-               "location: Location [ " \
+               "location: Location [" \
                "latitude: {lat:.5f}, " \
                "longitude: {lon:.5f}" \
                "]" \
@@ -320,8 +320,9 @@ class LocationProvider:
         samples = self.get_location_samples()
         prev = next_ = None
         for i in range(len(samples)):
+            print(samples[i])
             curr_date = samples[i].get_date()
-            if i == 0 and curr_date > datetime:
+            if i == 0 and curr_date > datetime: # TODO erreur de compilation
                 next_ = samples[i]
                 break
             elif i > 0 and curr_date > datetime:
@@ -354,7 +355,6 @@ class LocationProvider:
         return CompositeLocationProvider(self, other)
 
 
-# TODO: Implémenter la classe ListLocationProvider.
 class ListLocationProvider(LocationProvider):
 
     def __init__(self, list_location_sample):
@@ -378,7 +378,7 @@ class CompositeLocationProvider(LocationProvider):
     def __str__(self):
         return "CompositeLocationProvider (" + str(
             len(self.__lp1.get_location_samples()) + len(
-                self.__lp2.get_location_samples())) + " location samples)\n" + "+" + utils.indent()
+                self.__lp2.get_location_samples())) + " location samples)\n" + "+" + utils.indent()  # TODO a finir
 
 
 if __name__ == '__main__':
