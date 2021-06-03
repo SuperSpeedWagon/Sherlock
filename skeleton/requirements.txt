@@ -1,0 +1,7 @@
+exifread
+folium
+googlemaps
+pyqt5
+pyqtwebengine
+requests
+tweepy
