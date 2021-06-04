@@ -34,10 +34,10 @@ class WifiLogsLocationProvider(ListLocationProvider):
                     "WHERE u.name = '{name:s}' " \
                     "ORDER BY timestamp".format(name=self.__username)
         query_results = cur.execute(sql_query)
-        print("----------------->", query_results.fetchone())
+        #print("----------------->", query_results.fetchone())
         samples = []
         for timestamp, lat, lng in query_results:
-            print(timestamp, lat, lng)
+            #print(timestamp, lat, lng)
             loc = Location(lat, lng)
             dt = datetime.fromtimestamp(timestamp)
             samples += [LocationSample(dt, loc)]

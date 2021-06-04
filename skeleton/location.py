@@ -375,12 +375,12 @@ class CompositeLocationProvider(LocationProvider):
         self.__lp2 = lp2
 
     def get_location_samples(self):
-        return self.__lp1.get_location_samples().append(self.__lp2.get_location_samples())
+        return self.__lp1.get_location_samples() + (self.__lp2.get_location_samples())
 
     def __str__(self):
-        return "CompositeLocationProvider ("  # + str(
-        # len(self.__lp1.get_location_samples()) + len(
-        #    self.__lp2.get_location_samples())) + " location samples)\n" + "+" + utils.indent()  # TODO a finir et indenter correctement
+        return "CompositeLocationProvider (" + str(
+            len(self.__lp1.get_location_samples()) + len(
+                self.__lp2.get_location_samples())) + " location samples)\n"  # + "+" + utils.indent()  # TODO a finir et indenter correctement
 
 
 if __name__ == '__main__':
