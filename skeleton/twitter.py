@@ -33,21 +33,23 @@ class TwitterLocationProvider(ListLocationProvider):
         auth.set_access_token(twitter_access_token, twitter_access_token_secret)
         api = tweepy.API(auth)
 
-        self.__name = api.get_user
-        #print(api.get_user(id))
-        print(api.get_user(twitter_username))
-
-        if not Configuration.get_instance().get_element('verbose') is None:
-            print("Impossible d'extraire les informations du compte twitter " + twitter_username + "(error details)")
+        try:
+            self.__name = api.get_user(twitter_username).name
+        except Exception:
+            if not Configuration.get_instance().get_element('verbose') is None:
+                print(
+                    "Impossible d'extraire les informations du compte twitter " + twitter_username + "(error details)")
+            self.__name = "Titouan"  # default name
 
         samples = []
 
-        tweets = api.user_timeline
+        tweets = api.user_timeline()
 
         for t in tweets:
-            #check that the date is the same as the crime date
-            (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet()
-            samples += LocationSample(t, Location(lat, lng))
+            # check that the date is the same as the crime date
+            (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet(t)
+            if not (t is None or lat is None or lng is None):
+                samples.append(LocationSample(t, Location(lat, lng)))
         super().__init__(samples)
 
     @classmethod
@@ -74,11 +76,11 @@ class TwitterLocationProvider(ListLocationProvider):
     @staticmethod
     def _extract_location_sample_from_tweet(tweet):
         (t, lat, lng) = (None, None, None)
-
-        lat = tweet['coordinates']['latitude']
-        lng = tweet['coordinates']['longitude']
-        t = None
-
+        coord = utils.get_if_exists(tweet.coordinates, 'coordinates')
+        if coord is not None:
+            lng = coord[0]
+            lat = coord[1]
+        t = tweet.created_at
         return t, lat, lng
 
 

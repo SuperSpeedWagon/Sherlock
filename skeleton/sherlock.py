@@ -66,5 +66,5 @@ if __name__ == "__main__":
 
     # TODO: Pour chaque suspect, déterminer s'il a pu se rendre et repartir du
     #       lieu du crime.
-    for s in suspects:
+    #for s in suspects:
 
