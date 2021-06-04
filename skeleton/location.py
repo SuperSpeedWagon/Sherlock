@@ -142,7 +142,7 @@ class LocationSample:
             str_position="coord", position=position
         )
 
-    def __str__(self):  # TODO afficher correctement le datetime
+    def __str__(self):  # TODO afficher correctement le datetime (sans la decimale pour les secondes)
         return "LocationSample [" \
                "datetime: {date:s}, " \
                "location: Location [" \
@@ -326,7 +326,7 @@ class LocationProvider:
         prev = next_ = None
         for i in range(len(samples)):
             curr_date = samples[i].get_date()
-            if i == 0 and curr_date > datetime:  # TODO erreur de compilation
+            if i == 0 and curr_date > datetime:  # TODO erreur de compilation datetime non défini ???
                 next_ = samples[i]
                 break
             elif i > 0 and curr_date > datetime:
@@ -362,12 +362,10 @@ class LocationProvider:
 class ListLocationProvider(LocationProvider):
 
     def __init__(self, list_location_sample):
-        self.__samples = []
-        for ls in list_location_sample:
-            self.__samples += [ls]
+        self.__samples = copy.deepcopy(list_location_sample)
 
     def get_location_samples(self):
-        return self.__samples
+        return copy.deepcopy(self.__samples)
 
 
 class CompositeLocationProvider(LocationProvider):
@@ -380,9 +378,9 @@ class CompositeLocationProvider(LocationProvider):
         return self.__lp1.get_location_samples().append(self.__lp2.get_location_samples())
 
     def __str__(self):
-        return "CompositeLocationProvider (" + str(
-            len(self.__lp1.get_location_samples()) + len(
-                self.__lp2.get_location_samples())) + " location samples)\n" + "+" + utils.indent()  # TODO a finir
+        return "CompositeLocationProvider ("  # + str(
+        # len(self.__lp1.get_location_samples()) + len(
+        #    self.__lp2.get_location_samples())) + " location samples)\n" + "+" + utils.indent()  # TODO a finir et indenter correctement
 
 
 if __name__ == '__main__':

@@ -37,7 +37,8 @@ class LogsLocationProvider(ListLocationProvider):
                         loc = LocationSample(t, Location(lat, lng))
                         samples.append(loc)
         except FileNotFoundError as e:
-            print("Impossible de trouver le fichier donné.")
+            if Configuration.get_instance().get_element('verbose'):
+                print("Impossible de trouver le fichier donné.")
         super().__init__(samples)
 
         # r= re.match("a(b|c)d", "abd")
