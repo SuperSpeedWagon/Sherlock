@@ -14,19 +14,7 @@ __email__ = "kevin.huguenin@unil.ch"
 import utils
 
 
-# TODO: Créer une classe Configuration contenant:
-#       - une structure de données adéquate pour stocker des couples
-#         clefs-valeurs pour les paramètres de configuration
-#       - une méthode add_element pour ajouter un nouvel élément
-#       - une méthode get_element pour récupérer la valeur d'un paramètre à
-#         partir de sa clef
-
-# TODO: Utiliser le patron de conception Singleton pour cette classe, pour
-#       manipuler la configuration de manière globale dans tout le programme.
-
-
 class Configuration:
-
     __instance = None
 
     def __init__(self):

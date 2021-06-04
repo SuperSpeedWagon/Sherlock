@@ -28,10 +28,8 @@ import json
 from configuration import *
 
 
-# TODO: Définir la classe Suspect qui décrit des informations contenues dans un
-#       fichier (nom, LocationProvider).
 class Suspect:
-    # TODO: Implémenter le constructeur et les getters
+
     def __init__(self, name, locationProvider):
         self._name = name
         self._lp = locationProvider
@@ -48,10 +46,6 @@ class Suspect:
     # [Suspect] Name: jdoe, Location provider: PictureLocationProvider (source: ’ ../ data/pics /jdoe’ (JPG,JPEG,
     # jpg,jpeg), 2 location samples)
 
-    # TODO: Implémenter une méthode create_suspects_from_XML_file qui prend un
-    #       nom de fichier XML en paramètre et le parse pour créer une liste de
-    #       suspects.
-    # TODO: (Alternative) implémenter une méthode similaire pour les fichiers JSON
     @staticmethod
     def create_suspects_from_XML_file(filename: str):
         tree = xml.etree.ElementTree.parse(filename)
@@ -81,6 +75,7 @@ class Suspect:
             suspects.append(Suspect(name, composite))
         return suspects
 
+    # TODO: (Alternative) implémenter une méthode similaire pour les fichiers JSON
     @staticmethod
     def create_suspects_from_JSON_file(filename: str):
         pass
@@ -103,6 +98,9 @@ if __name__ == "__main__":
     #
 # suspects = Suspect.create_suspects_from_JSON_file('../data/suspects.json')
 # print('\n'.join(map(str, suspects)))
+
+#TODO twitter has too many samples
+#TODO Logs has no sample but also does not compile on its own
 
 ### Résultat attendu ###
 

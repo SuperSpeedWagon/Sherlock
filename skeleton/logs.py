@@ -16,11 +16,8 @@ import re
 from datetime import datetime, timezone, timedelta
 
 
-# TODO: Définir la classe PictureLocationProvider qui désigne des objets
-#       LocationProvider obtenus à partir de logs.
 class LogsLocationProvider(ListLocationProvider):
-    # TODO: Implémenter le constructeur où l'on définit en attribut le nom du
-    #       fichier de log et où l'on construit la liste de samples.
+
     def __init__(self, log_file: str):
         # L'attribut contenant le nom du fichier est privé et l'attribut
         # __samples est hérité de ListLocationProvider
@@ -40,14 +37,6 @@ class LogsLocationProvider(ListLocationProvider):
             if Configuration.get_instance().get_element('verbose'):
                 print("Impossible de trouver le fichier donné.")
         super().__init__(samples)
-
-        # r= re.match("a(b|c)d", "abd")
-        # TODO: parcourir les logs et filtrer ceux qui contiennent des appels
-        #       GPS valides (coordonnées + temps).
-        #       Générer un sample pour chaque log valide et l'ajouter à une
-        #       liste temporaire.
-        #       Appeler ensuite super en passant cette liste temporaire pour
-        #       définir l'attribut __samples
 
     def __str__(self):
         return "LogsLocationProvider (" + self.__file + ", " + str(

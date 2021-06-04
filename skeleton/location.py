@@ -380,8 +380,13 @@ class CompositeLocationProvider(LocationProvider):
     def __str__(self):
         return "CompositeLocationProvider (" + str(
             len(self.__lp1.get_location_samples()) + len(
-                self.__lp2.get_location_samples())) + " location samples)\n"  # + "+" + utils.indent()  # TODO a finir et indenter correctement
+                self.__lp2.get_location_samples())) + " location samples)\n" + " +" + utils.indent(
+            str(self.__lp1)) + "\n +" + utils.indent(str(self.__lp2))
 
+
+# CompositeLocationProvider (4 location samples)
+#  +	ListLocationProvider (2 location samples)
+#  +	ListLocationProvider (2 location samples)
 
 if __name__ == '__main__':
     pass

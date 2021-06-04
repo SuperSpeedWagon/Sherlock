@@ -71,9 +71,6 @@ class TwitterLocationProvider(ListLocationProvider):
             n=len(self.get_location_samples())
         )
 
-    # TODO: Implémenter la méthode _extract_location_sample_from_tweet qui prend
-    #       en paramètre un tweet et renvoie un tuple (temps, latitude, longitude).
-    # Comme pour la méthode de Picture, vérifier que les paramètres sont bien présents dans le tweet
     @staticmethod
     def _extract_location_sample_from_tweet(tweet):
         (t, lat, lng) = (None, None, None)
