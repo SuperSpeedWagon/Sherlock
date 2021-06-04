@@ -85,22 +85,21 @@ class Suspect:
 
 
 if __name__ == "__main__":
-    pass
     # Tester l'implémentation de cette classe avec les instructions de ce bloc
     # main (le résultat attendu est affiché ci-dessous).
 
-    # Configuration.get_instance().add_element("verbose", True)
-    # TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
-    # TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
+    Configuration.get_instance().add_element("verbose", True)
+    TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
+    TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
     #
-    # hardman = Suspect('chardman', PictureLocationProvider('../data/pics/chardman'))
-    # print(hardman)
+    hardman = Suspect('chardman', PictureLocationProvider('../data/pics/chardman'))
+    print(hardman)
     #
-    # suspects = Suspect.create_suspects_from_XML_file('../data/suspects.xml')
-    # print('\n'.join(map(str, suspects)))
+    suspects = Suspect.create_suspects_from_XML_file('../data/suspects.xml')
+    print('\n'.join(map(str, suspects)))
     #
-    # suspects = Suspect.create_suspects_from_JSON_file('../data/suspects.json')
-    # print('\n'.join(map(str, suspects)))
+    suspects = Suspect.create_suspects_from_JSON_file('../data/suspects.json')
+    print('\n'.join(map(str, suspects)))
 
     ### Résultat attendu ###
 

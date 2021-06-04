@@ -20,41 +20,66 @@ import html
 from datetime import datetime, timezone, timedelta
 
 
-class TwitterLocationProvider():
+class TwitterLocationProvider(ListLocationProvider):
     __api_key = None
     __api_key_secret = None
 
     def __init__(self, twitter_username: str, twitter_access_token: str, twitter_access_token_secret: str):
-        self.__twitter_username = twitter_username
-        self.__twitter_access_token = twitter_access_token
-        self.__twitter_access_token_secret = twitter_access_token_secret
-        self.__list_location_sample = []
+        self.__username = twitter_username
+        self.__access_token = twitter_access_token
+        self.__access_token_secret = twitter_access_token_secret
 
-    def set_api_key(self, api_key: str):
-        self.__api_key = api_key
+        auth = tweepy.OAuthHandler(TwitterLocationProvider.__api_key, TwitterLocationProvider.__api_key_secret)
+        auth.set_access_token(twitter_access_token, twitter_access_token_secret)
+        api = tweepy.API(auth)
 
-    def set_api_key_secret(self, api_key: str):
-        self.__api_key_secret = api_key
+        self.__name = api.get_user
+        #print(api.get_user(id))
+        print(api.get_user(twitter_username))
+
+        if not Configuration.get_instance().get_element('verbose') is None:
+            print("Impossible d'extraire les informations du compte twitter " + twitter_username + "(error details)")
+
+        samples = []
+
+        tweets = api.user_timeline
+
+        for t in tweets:
+            #check that the date is the same as the crime date
+            (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet()
+            samples += LocationSample(t, Location(lat, lng))
+        super().__init__(samples)
+
+    @classmethod
+    def set_api_key(cls, api_key: str):
+        cls.__api_key = api_key
+
+    @classmethod
+    def set_api_key_secret(cls, api_key: str):
+        cls.__api_key_secret = api_key
 
     def __str__(self):
         return "TwitterLocationProvider" \
-               " (user '{username:s}'" \
-               " aka '{black_magic:s}'," \
+               " (utilisateur '{username:s}'" \
+               " ou '{name:s}'," \
                " {n:d} location samples)".format(
-            username=self.__twitter_username,
-            black_magic="to be defined",
-            n=len(self.__list_location_sample)
+            username=self.__username,
+            name=self.__name,
+            n=len(self.get_location_samples())
         )
 
     # TODO: Implémenter la méthode _extract_location_sample_from_tweet qui prend
     #       en paramètre un tweet et renvoie un tuple (temps, latitude, longitude).
     # Comme pour la méthode de Picture, vérifier que les paramètres sont bien présents dans le tweet
-    def _extract_location_sample_from_tweet(self, tweet):
-        latitude = tweet['coordinates']['latitude']
-        longitude = tweet['coordinates']['longitude']
-        time = None
+    @staticmethod
+    def _extract_location_sample_from_tweet(tweet):
+        (t, lat, lng) = (None, None, None)
 
-        return time, latitude, longitude
+        lat = tweet['coordinates']['latitude']
+        lng = tweet['coordinates']['longitude']
+        t = None
+
+        return t, lat, lng
 
 
 if __name__ == '__main__':
@@ -62,16 +87,17 @@ if __name__ == '__main__':
     # Tester l'implémentation de cette classe avec les instructions de ce bloc
     # main (le résultat attendu est affiché ci-dessous).
 
-    # Configuration.get_instance().add_element("verbose", True)
-    # Configuration.get_instance().add_element("crime_date", datetime.strptime("08/04/2021", "%d/%m/%Y"))
-    # TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
-    # TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
+    Configuration.get_instance().add_element("verbose", True)
+    Configuration.get_instance().add_element("crime_date", datetime.strptime("08/04/2021", "%d/%m/%Y"))
+    TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
+    TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
     #
-    # lp = TwitterLocationProvider('rvkint95', '842358721544101888-AMqXbdV1ciZ6XIpcmfKDwMeadzxwBHb', '8ptgdczduqQVIrpVh7aXrmOdp8MDDLaUvThwP3bRfyk9g')
+    lp = TwitterLocationProvider('rvkint95', '842358721544101888-AMqXbdV1ciZ6XIpcmfKDwMeadzxwBHb',
+                                 '8ptgdczduqQVIrpVh7aXrmOdp8MDDLaUvThwP3bRfyk9g')
     #
-    # print(lp)
-    # lp.print_location_samples()
-    # lp.show_location_samples()
+    print(lp)
+    lp.print_location_samples()
+    lp.show_location_samples()
 
     ### Résultat attendu ###
 

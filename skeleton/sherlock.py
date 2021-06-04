@@ -25,10 +25,12 @@ DESCRIPTION = (
 
 if __name__ == "__main__":
     # try:
+    if sys.argv == 1 and sys.argv[0] == '-h':
+        print('')
 
     parser = argparse.ArgumentParser(description=DESCRIPTION)
 
-    parser.add_argument("-h", "--help", help="help", required=False, action="help_true")
+    parser.add_argument("-h", "--help", help="help", required=False, action="store_true")
     parser.add_argument("-v", "--verbose", help="verbose", required=False, action="store_true")
     parser.add_argument("-s", "--suspect", help="xml", required=True, type=str)
     parser.add_argument("-t", "--twitter-api-key", help="twitter_api_key", required=True, type=str)
@@ -43,9 +45,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.help:
-        print("")
-
     conf = Configuration.get_instance()
 
     if args.verbose:
@@ -58,10 +57,14 @@ if __name__ == "__main__":
     #       accessible depuis tous les modules du programme.
 
     # TODO: Afficher le message d'accueil du logiciel.
+    print(DESCRIPTION)
 
     # TODO: Lire le fichier suspect, l'analyser, construire les objets Suspect
     #       correspondants et les stocker dans une liste. Utiliser les méthodes
     #       createObjectFromXMLFile() / createObjectFromJSONFile().
+    suspects = Suspect.create_suspects_from_XML_file(args.suspect)
 
     # TODO: Pour chaque suspect, déterminer s'il a pu se rendre et repartir du
     #       lieu du crime.
+    for s in suspects:
+
