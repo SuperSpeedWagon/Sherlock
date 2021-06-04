@@ -48,15 +48,12 @@ class LogsLocationProvider(ListLocationProvider):
         #       Appeler ensuite super en passant cette liste temporaire pour
         #       définir l'attribut __samples
 
-    # TODO: Implémenter la méthode __str__ pour afficher les objets de la forme
-    #       suivante.
     def __str__(self):
         return "LogsLocationProvider (" + self.__file + ", " + str(
             len(self.get_location_samples())) + " location samples)"
 
     # LogsLocationProvider (source: ../data/logs/jdoe.log, 2 location samples)
 
-    # TODO: Implémenter la méthode _extract_location_sample_from_picture
     @staticmethod
     def _extract_location_sample_from_log(log: str):
         """

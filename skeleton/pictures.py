@@ -37,8 +37,8 @@ class PictureLocationProvider(ListLocationProvider):
                 if f.name.endswith(i):
                     valid = True
             if not valid:
-                # TODO only if config contains --verbose
-                print("Attention: fichier ignoré ’" + f.name + "’ (Informations de temps et/ou location manquantes)")
+                if not Configuration.get_element('verbose') is None:
+                    print("Attention: fichier ignoré ’" + f.name + "’ (Informations de temps et/ou location manquantes)")
             else:
                 t, lat, lng = PictureLocationProvider._extract_location_sample_from_picture(f)
                 if not (t is None or lat is None or lng is None):

@@ -3,17 +3,18 @@
 __author__ = "Benjamin Trubert, Kévin Huguenin, Alpha Diallo, Lev Velykoivanenko, Noé Zufferey"
 __copyright__ = "Copyright 2021, The Information Security and Privacy Lab at the University of Lausanne (" \
                 "https://www.unil.ch/isplab/)"
-__credits__ = ["Benjamin Trubert", "Kévin Huguenin", "Alpha Diallo", "Lev Velykoivanenko", "Noé Zufferey", "Vaibhav Kulkarni"]
+__credits__ = ["Benjamin Trubert", "Kévin Huguenin", "Alpha Diallo", "Lev Velykoivanenko", "Noé Zufferey",
+               "Vaibhav Kulkarni"]
 
 __version__ = "1"
 __license__ = "MIT"
 __maintainer__ = "Kévin Huguenin"
 __email__ = "kevin.huguenin@unil.ch"
+
 import argparse
 from datetime import datetime, timedelta, timezone
 from suspects import *
 from configuration import *
-
 
 DESCRIPTION = (
     "Identifie les suspects les plus plausibles à partir de leurs traces de "
@@ -22,16 +23,36 @@ DESCRIPTION = (
     "par une date/heure et une localisation"
 )
 
-
 if __name__ == "__main__":
     # try:
 
     parser = argparse.ArgumentParser(description=DESCRIPTION)
 
+    parser.add_argument("-h", "--help", help="help", required=False, action="help_true")
+    parser.add_argument("-v", "--verbose", help="verbose", required=False, action="store_true")
+    parser.add_argument("-s", "--suspect", help="xml", required=True, type=str)
+    parser.add_argument("-t", "--twitter-api-key", help="twitter_api_key", required=True, type=str)
+    parser.add_argument("-u", "--twitter-api-key-secret", help="twitter_api_key_secret", required=True, type=str)
+    parser.add_argument("-g", "--google-api-key", help="google_api_key", required=True, type=str)
+    parser.add_argument("-lat", "--latitude", help="latitude", required=True, type=float)
+    parser.add_argument("-lng", "--longitude", help="longitude", required=True, type=float)
+    parser.add_argument("-d", "--date", help="date", required=True, type=datetime)
+
     # TODO: Ajouter les différents arguments de la ligne de commande à
     #       l'analyseur "parser".
 
     args = parser.parse_args()
+
+    if args.help:
+        print("")
+
+    conf = Configuration.get_instance()
+
+    if args.verbose:
+        conf.add_element('verbose', True)
+    else:
+        conf.add_element('verbose', False)
+
 
     # TODO: Stocker les paramètres importants dans un objet Configuration
     #       accessible depuis tous les modules du programme.
