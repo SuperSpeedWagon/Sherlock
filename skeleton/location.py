@@ -35,7 +35,7 @@ class Location:
     @classmethod
     def set_api_key(cls, api_key: str):
         cls.__api_key = api_key
-        cls.__api_client = googlemaps.Client(key=api_key)  ## googlemaps.Client(key=api_key)
+        cls.__api_client = googlemaps.Client(key=api_key)  # googlemaps.Client(key=api_key)
 
     def __check_api_init(self):
         unil = (46.522313, 6.573909)
@@ -116,7 +116,7 @@ class LocationSample:
     def __init__(self, date: datetime, location: Location, text: str = ""):
         lon = location.get_longitude()
         lat = location.get_latitude()
-        self._location = Location(lon, lat)
+        self._location = Location(lat, lon)
         self._date = date
 
         # self._description =  TODO ajouter description en paramètre
@@ -213,11 +213,13 @@ class LocationProvider:
         pass
 
     def print_location_samples(self):
-        res = ""
-        for i, ls in enumerate(self.get_location_samples()):
-            tmp = "sample {:d}: {:s}\n".format(i + 1, str(ls))
-            res += tmp
-        return res
+        for s in self.get_location_samples():
+            print(s)
+        # res = ""
+        # for i, ls in enumerate(self.get_location_samples()):
+        #    tmp = "sample {:d}: {:s}\n".format(i + 1, str(ls))
+        #    res += tmp
+        # print(res)
 
     def show_location_samples(self, marker: LocationSample = None, showPath=False, title=None):
         self.__class__.app = QApplication.instance()
@@ -375,7 +377,7 @@ class CompositeLocationProvider(LocationProvider):
         self.__lp2 = lp2
 
     def get_location_samples(self):
-        return self.__lp1.get_location_samples() + self.__lp2.get_location_samples()
+        return self.__lp1.get_location_samples().append(self.__lp2.get_location_samples())
 
     def __str__(self):
         return "CompositeLocationProvider (" + str(

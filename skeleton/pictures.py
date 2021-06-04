@@ -37,7 +37,7 @@ class PictureLocationProvider(ListLocationProvider):
                 if f.name.endswith(i):
                     valid = True
             if not valid:
-                if not Configuration.get_element('verbose') is None:
+                if Configuration.get_instance().get_element('verbose'):
                     print("Attention: fichier ignoré ’" + f.name + "’ (Informations de temps et/ou location manquantes)")
             else:
                 t, lat, lng = PictureLocationProvider._extract_location_sample_from_picture(f)
@@ -52,8 +52,6 @@ class PictureLocationProvider(ListLocationProvider):
     def get_list_valid_extensions(self):
         return copy.deepcopy(self._VALID_EXTENSIONS)
 
-    # TODO: Redéfinir la méthode __str__ pour afficher les objets sous la forme
-    #       suivante :
     def __str__(self):
         return "PictureLocationProvider (source: ’ " + str(self.get_directory()) + "’ (" + str(
             self.get_list_valid_extensions()).replace("'", "").strip("[").strip("]") + "), " + str(

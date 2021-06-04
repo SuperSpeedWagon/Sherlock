@@ -44,12 +44,13 @@ class TwitterLocationProvider(ListLocationProvider):
         samples = []
 
         tweets = api.user_timeline()
-
+        crime_date = Configuration.get_instance().get_element('crime_date')
         for t in tweets:
             # check that the date is the same as the crime date
             (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet(t)
-            if not (t is None or lat is None or lng is None):
-                samples.append(LocationSample(t, Location(lat, lng)))
+            is_recent = abs(t - crime_date) < timedelta(days=1)
+            if not (t is None or lat is None or lng is None) and is_recent:
+                samples.insert(0, LocationSample(t, Location(lat, lng)))
         super().__init__(samples)
 
     @classmethod
@@ -76,10 +77,11 @@ class TwitterLocationProvider(ListLocationProvider):
     @staticmethod
     def _extract_location_sample_from_tweet(tweet):
         (t, lat, lng) = (None, None, None)
-        coord = utils.get_if_exists(tweet.coordinates, 'coordinates')
-        if coord is not None:
-            lng = coord[0]
-            lat = coord[1]
+        if tweet.coordinates is not None:
+            coord = utils.get_if_exists(tweet.coordinates, 'coordinates')
+            if coord is not None:
+                lng = coord[0]
+                lat = coord[1]
         t = tweet.created_at
         return t, lat, lng
 
@@ -97,9 +99,10 @@ if __name__ == '__main__':
     lp = TwitterLocationProvider('rvkint95', '842358721544101888-AMqXbdV1ciZ6XIpcmfKDwMeadzxwBHb',
                                  '8ptgdczduqQVIrpVh7aXrmOdp8MDDLaUvThwP3bRfyk9g')
     #
+    print(str(Configuration.get_instance().get_element("crime_date")))
     print(lp)
     lp.print_location_samples()
-    lp.show_location_samples()
+    #lp.show_location_samples()
 
     ### Résultat attendu ###
 
