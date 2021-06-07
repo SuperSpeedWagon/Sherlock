@@ -11,7 +11,7 @@ __license__ = "MIT"
 __maintainer__ = "Kévin Huguenin"
 __email__ = "kevin.huguenin@unil.ch"
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from abc import ABC, abstractmethod
 import math
 import sys
@@ -119,7 +119,7 @@ class LocationSample:
         lon = location.get_longitude()
         lat = location.get_latitude()
         self._location = Location(lat, lon)
-        self._date = date
+        self._date = date .replace(tzinfo=timezone(timedelta(hours=2)))
 
     def get_location(self):
         return self._location
@@ -205,11 +205,6 @@ class LocationProvider:
     def print_location_samples(self):
         for s in self.get_location_samples():
             print(s)
-        # res = ""
-        # for i, ls in enumerate(self.get_location_samples()):
-        #    tmp = "sample {:d}: {:s}\n".format(i + 1, str(ls))
-        #    res += tmp
-        # print(res)
 
     def show_location_samples(self, marker: LocationSample = None, showPath=False, title=None):
         self.__class__.app = QApplication.instance()
@@ -309,7 +304,7 @@ class LocationProvider:
                       file=sys.stderr)
 
     def get_surrounding_temporal_location_samples(self, timestamp: datetime):
-        timestamp = calendar.timegm(timestamp.timetuple())
+        #timestamp = calendar.timegm(timestamp.timetuple())
         samples = self.get_location_samples()
         prev = next_ = None
 
@@ -365,24 +360,6 @@ class CompositeLocationProvider(LocationProvider):
         self.__lp2 = lp2
 
     def get_location_samples(self):
-        #location_samples = []
-        #a = self.__lp1.get_location_samples()
-        #b = self.__lp2.get_location_samples()
-
-        #while len(a) and len(b):
-        #    if not len(a):
-        #        location_samples += b
-        #        b = []
-        #    elif not len(b):
-        #        location_samples += a
-        #        a = []
-        #    elif a[0].get_date() <= b[0].get_date():
-        #        location_samples += a[0]
-        #        a = a[1:]
-        #    else:
-        #        location_samples += b[0]
-        #        b = b[1:]
-        #return location_samples
         return self.__lp1.get_location_samples() + self.__lp2.get_location_samples()
 
     def __str__(self):
@@ -399,13 +376,13 @@ class CompositeLocationProvider(LocationProvider):
 if __name__ == '__main__':
     # Tester l'implémentation de cette classe avec les instructions de ce bloc main (le résultat attendu est affiché ci-dessous)
     Configuration.get_instance().add_element("verbose", True)
-    # Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
+    Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
 
     # ---------------- API key --------------------
-    api_file = open("apikey.txt", "r")
-    api_key = api_file.read()
-    api_file.close
-    Location.set_api_key(api_key)
+    #api_file = open("apikey.txt", "r")
+    #api_key = api_file.read()
+    #api_file.close
+    #Location.set_api_key(api_key)
     # ---------------------------------------------
 
     paris = Location(48.854788, 2.347557)

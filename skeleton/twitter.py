@@ -48,7 +48,9 @@ class TwitterLocationProvider(ListLocationProvider):
         for t in tweets:
             # check that the date is the same as the crime date
             (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet(t)
+            t = t.replace(tzinfo=timezone(timedelta(hours=2)))
             is_recent = abs(t - crime_date) <= timedelta(days=1)
+
             if not (t is None or lat is None or lng is None) and is_recent:
                 samples.insert(0, LocationSample(t, Location(lat, lng)))
         super().__init__(samples)
@@ -80,7 +82,6 @@ class TwitterLocationProvider(ListLocationProvider):
                 lng = coord[0]
                 lat = coord[1]
         t = tweet.created_at
-        t.replace(tzinfo=Configuration.get_instance().get_element("timezone"))
         return t, lat, lng
 
 
@@ -90,6 +91,7 @@ if __name__ == '__main__':
 
     Configuration.get_instance().add_element("verbose", True)
     Configuration.get_instance().add_element("crime_date", datetime.strptime("08/04/2021", "%d/%m/%Y").replace(tzinfo=timezone(timedelta(hours=2))))
+
     TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
     TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
     #

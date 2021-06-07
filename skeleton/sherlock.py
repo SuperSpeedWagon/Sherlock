@@ -46,6 +46,7 @@ help_msg = ("usage : sherlock.py [−h] [−v] −s SUSPECT −t TWITTER_API_KEY
 if __name__ == "__main__":
     try:
 
+        print(DESCRIPTION)
         parser = argparse.ArgumentParser(description=DESCRIPTION)
         parser.add_argument("-h", "--help", help="help", required=False, action="store_true")
         parser.add_argument("-v", "--verbose", help="verbose", required=False, action="store_true")
@@ -87,16 +88,13 @@ if __name__ == "__main__":
         # TODO use google maps “ Investigation liee au crime du 06/05/2020 a 10:22:23 @ Banane, 1015 Ecublens, Suisse (46.5219,6.5791) ` ”
 
         suspects = Suspect.create_suspects_from_XML_file(args.suspect)
-
-        # TODO: Pour chaque suspect, déterminer s'il a pu se rendre et repartir du
-        #       lieu du crime.
+        suspect_array = []
+        for s in suspects:
+            suspect_array.append(LocationProvider.could_have_been_there(s.get_location_provider()))
 
     except Exception:
         print("[Erreur] L'erreur suivante est survenue durant l(execution du programme: ...")
 
-# TODO: Afficher le message d'accueil du logiciel.
 
 
-# TODO write help message
-# for s in suspects:
 # manage exception

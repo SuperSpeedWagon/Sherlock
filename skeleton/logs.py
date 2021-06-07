@@ -39,7 +39,7 @@ class LogsLocationProvider(ListLocationProvider):
         super().__init__(samples)
 
     def __str__(self):
-        return "LogsLocationProvider (" + self.__file + ", " + str(
+        return "LogsLocationProvider (" + str(self.__file) + ", " + str(
             len(self.get_location_samples())) + " location samples)"
 
     # LogsLocationProvider (source: ../data/logs/jdoe.log, 2 location samples)
@@ -66,23 +66,21 @@ class LogsLocationProvider(ListLocationProvider):
         line = log.split("]")[1]
         pair = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if not len(pair) == 0:
-            lng = float(pair[0])
-            lat = float(pair[1])
-        t.replace(tzinfo=Configuration.get_instance().get_element("timezone"))
+            lat = float(pair[0])
+            lng = float(pair[1])
         return t, lat, lng
 
 
 if __name__ == '__main__':
-    pass
     # Tester l'implémentation de cette classe avec les instructions de ce bloc
     # main (le résultat attendu est affiché ci-dessous).
 
     lp = LogsLocationProvider('../data/logs/hschmidt.log')
-    print(lp)
+    #print(lp)
     print(lp.get_surrounding_temporal_location_samples(
         datetime.strptime('2021-04-08 09:16:23', '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone(timedelta(hours=2)))))
-    lp.show_location_samples()
-    lp.print_location_samples()
+    #lp.show_location_samples()
+    #lp.print_location_samples()
 
     ### Résultat attendu ###
 

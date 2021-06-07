@@ -96,7 +96,6 @@ class PictureLocationProvider(ListLocationProvider):
             timestamp = utils.get_if_exists(exif_data, 'GPS GPSTimeStamp')
 
             t = datetime.strptime(str(date), "%Y:%m:%d")
-            t.replace(tzinfo=Configuration.get_instance().get_element("timezone"))
         return t, lat, lng
 
 

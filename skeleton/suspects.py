@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # main (le résultat attendu est affiché ci-dessous).
 
     Configuration.get_instance().add_element("verbose", False)
-    Configuration.get_instance().add_element("crime_date", datetime.strptime("08/04/2021", "%d/%m/%Y"))
+    Configuration.get_instance().add_element("crime_date", datetime.strptime("08/04/2021", "%d/%m/%Y").replace(tzinfo=timezone(timedelta(hours=2))))
     TwitterLocationProvider.set_api_key('Z4bLkruoqSp0JXJfJGTaMQEZo')
     TwitterLocationProvider.set_api_key_secret('gYyLCa7QiDje76VaTttlylDjGThCBGcp9MIcEGlzVq6FJcXIdc')
     #
