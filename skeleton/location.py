@@ -26,6 +26,7 @@ import tempfile
 import pathlib
 import copy
 import pprint
+import calendar
 
 
 class Location:
@@ -35,7 +36,7 @@ class Location:
     @classmethod
     def set_api_key(cls, api_key: str):
         cls.__api_key = api_key
-        cls.__api_client = googlemaps.Client(key=api_key)  # googlemaps.Client(key=api_key)
+        cls.__api_client = googlemaps.Client(key=api_key)
 
     def __check_api_init(self):
         unil = (46.522313, 6.573909)
@@ -60,7 +61,6 @@ class Location:
             raise ValueError("longitude and latitude must be in range [-180, 180]")
         self._longitude = longitude
         self._latitude = latitude
-        # self._api_client = TODO ajouter paramètre
 
     def __str__(self):
         return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self._latitude, lon=self._longitude)
@@ -74,8 +74,8 @@ class Location:
     def get_name(self):
         response = self.__api_client.reverse_geocode(
             (
-                self._longitude,
-                self._latitude
+                self._latitude,
+                self._longitude
             ),
             language="fr"
         )
@@ -84,19 +84,21 @@ class Location:
         return address_name
 
     def get_travel_distance_and_time(self, destination, mode="walking"):
-        coord_orig = (self._longitude, self._latitude)
-        coord_dest = (destination.get_longitude(), destination.get_latitude())
+        coord_orig = (self._latitude, self._longitude)
+        coord_dest = (destination.get_latitude(), destination.get_longitude())
         response = self.__api_client.directions(
             coord_orig,
             coord_dest,
             language="en",
             units="metric",
-            mode=mode  # driving (default), walking, bicycling, transit
+            mode=mode
         )
+        # pprint.pprint(response)
 
         legs = response[0]["legs"][0]
         travel_dist = legs["distance"]["value"]
         travel_time = legs["duration"]["value"]
+        travel_time = timedelta(seconds=travel_time)
 
         return travel_dist, travel_time
 
@@ -119,8 +121,6 @@ class LocationSample:
         self._location = Location(lat, lon)
         self._date = date
 
-        # self._description =  TODO ajouter description en paramètre
-
     def get_location(self):
         return self._location
 
@@ -142,9 +142,9 @@ class LocationSample:
             str_position="coord", position=position
         )
 
-    def __str__(self):  # TODO afficher correctement le datetime (sans la decimale pour les secondes) + mettre +02:00
+    def __str__(self): 
         return "LocationSample [" \
-               "datetime: {date:s}, " \
+               "datetime: {date:}, " \
                "location: Location [" \
                "latitude: {lat:.5f}, " \
                "longitude: {lon:.5f}" \
@@ -155,8 +155,6 @@ class LocationSample:
             lon=self._location.get_longitude()
         )
 
-    # Comparison is allowed only if the objects share the same location.
-    # Otherwise return NotImplemented.
     def __eq__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
@@ -170,32 +168,24 @@ class LocationSample:
     def __ge__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self._location != other.get_location():
-            return NotImplemented
         else:
             return self._date >= other.get_date()
 
     def __gt__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self._location != other.get_location():
-            return NotImplemented
         else:
             return self._date > other.get_date()
 
     def __le__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self._location != other.get_location():
-            return NotImplemented
         else:
             return self._date <= other.get_date()
 
     def __lt__(self, other):
         if not isinstance(other, LocationSample):
             raise ValueError("illegal argument type. class LocationSample expected")
-        elif self._location != other.get_location():
-            return NotImplemented
         else:
             return self._date < other.get_date()
 
@@ -319,17 +309,16 @@ class LocationProvider:
                       file=sys.stderr)
 
     def get_surrounding_temporal_location_samples(self, timestamp: datetime):
+        timestamp = calendar.timegm(timestamp.timetuple())
         samples = self.get_location_samples()
-        print(samples[0])
-        print(samples[1])
-        print(samples[2])
         prev = next_ = None
+
         for i in range(len(samples)):
             curr_date = samples[i].get_date()
-            if i == 0 and curr_date > datetime:  # TODO erreur de compilation datetime non défini ???
+            if i == 0 and curr_date > timestamp:
                 next_ = samples[i]
                 break
-            elif i > 0 and curr_date > datetime:
+            elif i > 0 and curr_date > timestamp:
                 next_ = samples[i]
                 prev = samples[i - 1]
                 break
@@ -340,16 +329,14 @@ class LocationProvider:
     def could_have_been_there(self, ls: LocationSample):
         crime = ls
         a, b = self.get_surrounding_temporal_location_samples(crime.get_date())
-        # suspect inferred travel time
+        # suspect inferred travel time (from A to B through Crime)
         tto_crime = (crime.get_date() - a.get_date()).total_seconds()
         tfrom_crime = (b.get_date() - crime.get_date()).total_seconds()
         inferred_time = tto_crime + tfrom_crime
-        # suspect theoretical travel time
-        _, tto_crime_theoretical = crime.get_location().get_travel_distance_and_time(a.get_location())
-        _, tfrom_crime_theoretical = crime.get_location().get_travel_distance_and_time(b.get_location())
-        theoretical_time = tto_crime_theoretical + tfrom_crime_theoretical
+        # theoretical travel time (from A to B)
+        _, theoretical_time = a.get_location().get_travel_distance_and_time(b.get_location())
 
-        return theoretical_time <= inferred_time
+        return theoretical_time >= inferred_time
 
     def __str__(self):
         n = len(self.get_location_samples())
@@ -362,10 +349,13 @@ class LocationProvider:
 class ListLocationProvider(LocationProvider):
 
     def __init__(self, list_location_sample):
-        self.__samples = copy.deepcopy(list_location_sample)
+        # self.__location_samples = copy.deepcopy(list_location_sample)
+        self.__location_samples = []
+        for ls in list_location_sample:
+            self.__location_samples += [copy.deepcopy(ls)]
 
     def get_location_samples(self):
-        return copy.deepcopy(self.__samples)
+        return self.__location_samples
 
 
 class CompositeLocationProvider(LocationProvider):
@@ -375,7 +365,25 @@ class CompositeLocationProvider(LocationProvider):
         self.__lp2 = lp2
 
     def get_location_samples(self):
-        return self.__lp1.get_location_samples() + (self.__lp2.get_location_samples())
+        location_samples = []
+        a = self.__lp1.get_location_samples()
+        b = self.__lp2.get_location_samples()
+
+        while len(a) and len(b):
+            if not len(a):
+                location_samples += b
+                b = []
+            elif not len(b):
+                location_samples += a
+                a = []
+            elif a[0].get_date() <= b[0].get_date():
+                location_samples += a[0]
+                a = a[1:]
+            else:
+                location_samples += b[0]
+                b = b[1:]
+
+        return location_samples
 
     def __str__(self):
         return "CompositeLocationProvider (" + str(
@@ -389,10 +397,16 @@ class CompositeLocationProvider(LocationProvider):
 #  +	ListLocationProvider (2 location samples)
 
 if __name__ == '__main__':
-    pass
     # Tester l'implémentation de cette classe avec les instructions de ce bloc main (le résultat attendu est affiché ci-dessous)
     Configuration.get_instance().add_element("verbose", True)
-    Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
+    # Location.set_api_key('AIzaSyAtMl3hOMtmLuUYk-bDPdVThgIEwBKDG7o')
+
+    # ---------------- API key --------------------
+    api_file = open("apikey.txt", "r")
+    api_key = api_file.read()
+    api_file.close
+    Location.set_api_key(api_key)
+    # ---------------------------------------------
 
     paris = Location(48.854788, 2.347557)
     lausanne = Location(46.517738, 6.632233)
@@ -418,7 +432,7 @@ if __name__ == '__main__':
     print(locationsamples.get_location_samples())
     locationsamples.show_location_samples()
 
-    print(locationsamples + locationsamples)
+    # print(locationsamples + locationsamples)
 
     ### Résultat attendu ###
 
