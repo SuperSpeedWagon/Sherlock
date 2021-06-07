@@ -86,7 +86,20 @@ if __name__ == "__main__":
         crime = LocationSample(conf.get_element("crime_date"), conf.get_element("crime_location"))
 
         # TODO use google maps “ Investigation liee au crime du 06/05/2020 a 10:22:23 @ Banane, 1015 Ecublens, Suisse (46.5219,6.5791) ` ”
-
+        api_file = open("apikey.txt", "r")
+        api_key = api_file.read()
+        api_file.close
+        Location.set_api_key(api_key)
+        print("Investigation liee au crime du {date:}" \
+            " à {time:} @ {place:} ({lat:.4f}, {lng:.4f})".format(
+                date=datetime.strftime(crime.get_date(), "%d/%m/%Y"), 
+                time=datetime.strftime(crime.get_date(), "%H:%M:%S"),
+                place=crime.get_location().get_name(),
+                lat=crime.get_location().get_latitude(),
+                lng=crime.get_location().get_longitude()
+            )
+        )
+        
         suspects = Suspect.create_suspects_from_XML_file(args.suspect)
         suspect_array = []
         for s in suspects:
