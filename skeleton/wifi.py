@@ -92,7 +92,6 @@ if __name__ == '__main__':
     lp = WifiLogsLocationProvider('../data/db/wifi.db', 'ljohnson')
     print(lp)
     lp.show_location_samples()
-    # TODO only 1 sample found in test
 
     ### Résultat attendu ###
 

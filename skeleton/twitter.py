@@ -48,7 +48,7 @@ class TwitterLocationProvider(ListLocationProvider):
         for t in tweets:
             # check that the date is the same as the crime date
             (t, lat, lng) = TwitterLocationProvider._extract_location_sample_from_tweet(t)
-            is_recent = abs(t - crime_date) < timedelta(days=1)
+            is_recent = abs(t - crime_date) <= timedelta(days=1)
             if not (t is None or lat is None or lng is None) and is_recent:
                 samples.insert(0, LocationSample(t, Location(lat, lng)))
         super().__init__(samples)
@@ -84,7 +84,6 @@ class TwitterLocationProvider(ListLocationProvider):
 
 
 if __name__ == '__main__':
-    pass
     # Tester l'implémentation de cette classe avec les instructions de ce bloc
     # main (le résultat attendu est affiché ci-dessous).
 
@@ -99,7 +98,7 @@ if __name__ == '__main__':
     print(str(Configuration.get_instance().get_element("crime_date")))
     print(lp)
     lp.print_location_samples()
-    #lp.show_location_samples()
+    lp.show_location_samples()
 
     ### Résultat attendu ###
 

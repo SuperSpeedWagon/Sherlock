@@ -63,7 +63,7 @@ class Location:
         # self._api_client = TODO ajouter paramètre
 
     def __str__(self):
-        return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self._latitude, lon=self.__longitude)
+        return "Location [latitude: {lat:.5f}, longitude: {lon:.5f}]".format(lat=self._latitude, lon=self._longitude)
 
     def get_latitude(self):
         return self._latitude
@@ -142,7 +142,7 @@ class LocationSample:
             str_position="coord", position=position
         )
 
-    def __str__(self):  # TODO afficher correctement le datetime (sans la decimale pour les secondes)
+    def __str__(self):  # TODO afficher correctement le datetime (sans la decimale pour les secondes) + mettre +02:00
         return "LocationSample [" \
                "datetime: {date:s}, " \
                "location: Location [" \
