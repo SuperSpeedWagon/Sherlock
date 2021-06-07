@@ -40,6 +40,7 @@ class WifiLogsLocationProvider(ListLocationProvider):
             #print(timestamp, lat, lng)
             loc = Location(lat, lng)
             dt = datetime.fromtimestamp(timestamp)
+            dt.replace(tzinfo=Configuration.get_instance().get_element("timezone"))
             samples += [LocationSample(dt, loc)]
         con.close()
         super().__init__(samples)

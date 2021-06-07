@@ -142,7 +142,7 @@ class LocationSample:
             str_position="coord", position=position
         )
 
-    def __str__(self): 
+    def __str__(self):
         return "LocationSample [" \
                "datetime: {date:}, " \
                "location: Location [" \
@@ -365,25 +365,25 @@ class CompositeLocationProvider(LocationProvider):
         self.__lp2 = lp2
 
     def get_location_samples(self):
-        location_samples = []
-        a = self.__lp1.get_location_samples()
-        b = self.__lp2.get_location_samples()
+        #location_samples = []
+        #a = self.__lp1.get_location_samples()
+        #b = self.__lp2.get_location_samples()
 
-        while len(a) and len(b):
-            if not len(a):
-                location_samples += b
-                b = []
-            elif not len(b):
-                location_samples += a
-                a = []
-            elif a[0].get_date() <= b[0].get_date():
-                location_samples += a[0]
-                a = a[1:]
-            else:
-                location_samples += b[0]
-                b = b[1:]
-
-        return location_samples
+        #while len(a) and len(b):
+        #    if not len(a):
+        #        location_samples += b
+        #        b = []
+        #    elif not len(b):
+        #        location_samples += a
+        #        a = []
+        #    elif a[0].get_date() <= b[0].get_date():
+        #        location_samples += a[0]
+        #        a = a[1:]
+        #    else:
+        #        location_samples += b[0]
+        #        b = b[1:]
+        #return location_samples
+        return self.__lp1.get_location_samples() + self.__lp2.get_location_samples()
 
     def __str__(self):
         return "CompositeLocationProvider (" + str(

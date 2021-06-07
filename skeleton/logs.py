@@ -68,7 +68,7 @@ class LogsLocationProvider(ListLocationProvider):
         if not len(pair) == 0:
             lng = float(pair[0])
             lat = float(pair[1])
-
+        t.replace(tzinfo=Configuration.get_instance().get_element("timezone"))
         return t, lat, lng
 
 
