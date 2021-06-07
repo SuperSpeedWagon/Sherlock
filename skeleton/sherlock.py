@@ -90,10 +90,11 @@ if __name__ == "__main__":
         suspects = Suspect.create_suspects_from_XML_file(args.suspect)
         suspect_array = []
         for s in suspects:
-            suspect_array.append(LocationProvider.could_have_been_there(s.get_location_provider()))
+            if LocationProvider.could_have_been_there(s.get_location_provider()):
+                suspect_array.append(s)
 
     except Exception:
-        print("[Erreur] L'erreur suivante est survenue durant l(execution du programme: ...")
+        print("[Erreur] L'erreur suivante est survenue durant l'execution du programme: ...")
 
 
 

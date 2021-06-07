@@ -79,8 +79,8 @@ if __name__ == '__main__':
     #print(lp)
     print(lp.get_surrounding_temporal_location_samples(
         datetime.strptime('2021-04-08 09:16:23', '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone(timedelta(hours=2)))))
-    #lp.show_location_samples()
-    #lp.print_location_samples()
+    lp.show_location_samples()
+    lp.print_location_samples()
 
     ### Résultat attendu ###
 
