@@ -322,11 +322,10 @@ class LocationProvider:
         return prev, next_
 
     def could_have_been_there(self, ls: LocationSample):
-        crime = ls
-        a, b = self.get_surrounding_temporal_location_samples(crime.get_date())
+        a, b = self.get_surrounding_temporal_location_samples(ls.get_date())
         # suspect inferred travel time (from A to B through Crime)
-        tto_crime = (crime.get_date() - a.get_date()).total_seconds()
-        tfrom_crime = (b.get_date() - crime.get_date()).total_seconds()
+        tto_crime = (ls.get_date() - a.get_date()).total_seconds()
+        tfrom_crime = (b.get_date() - ls.get_date()).total_seconds()
         inferred_time = tto_crime + tfrom_crime
         # theoretical travel time (from A to B)
         _, theoretical_time = a.get_location().get_travel_distance_and_time(b.get_location())
@@ -344,13 +343,12 @@ class LocationProvider:
 class ListLocationProvider(LocationProvider):
 
     def __init__(self, list_location_sample):
-        # self.__location_samples = copy.deepcopy(list_location_sample)
-        self.__location_samples = []
+        self.__samples = []
         for ls in list_location_sample:
-            self.__location_samples += [copy.deepcopy(ls)]
+            self.__samples += [copy.deepcopy(ls)]
 
     def get_location_samples(self):
-        return self.__location_samples
+        return self.__samples
 
 
 class CompositeLocationProvider(LocationProvider):

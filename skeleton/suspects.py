@@ -99,8 +99,6 @@ if __name__ == "__main__":
 # suspects = Suspect.create_suspects_from_JSON_file('../data/suspects.json')
 # print('\n'.join(map(str, suspects)))
 
-#TODO Logs has no sample but also does not compile on its own
-
 ### Résultat attendu ###
 
 # [Suspect] Name: chardman, Location provider: PictureLocationProvider (source: '../data/pics/chardman' (JPG,JPEG,jpg,jpeg), 2 location samples)

@@ -48,9 +48,6 @@ class WifiLogsLocationProvider(ListLocationProvider):
         return "WifiLogsLocationProvider (source: '" + self.__db + "', user '" + self.__username + "', " + str(
             len(self.get_location_samples())) + " location samples)"
 
-    # TODO: (Optionnel) Redéfinir la méthode
-    #       get_surrounding_temporal_location_sample pour effectuer les calculs
-    #       dans la requête SQL.
     def get_surrounding_temporal_location_sample(self, timestamp: int):
         con = sqlite3.connect(self.__db)
         cur = con.cursor()
